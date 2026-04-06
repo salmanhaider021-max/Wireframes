@@ -1,0 +1,851 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EQARCOM+ - Payment Plans</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --eq-primary:       #1a3c4e;
+    --eq-primary-hover: #14303f;
+    --eq-primary-light: #e8f0f4;
+    --eq-accent-green:  #4caf7d;
+    --eq-accent-orange: #f59e0b;
+    --eq-accent-red:    #ef4444;
+    --eq-accent-blue:   #3b82f6;
+    --eq-bg-page:       #f0f2f5;
+    --eq-bg-white:      #ffffff;
+    --eq-border:        #e2e8ec;
+    --eq-text-dark:     #1a2733;
+    --eq-text-mid:      #4b5e6d;
+    --eq-text-light:    #8fa5b3;
+    --eq-text-white:    #ffffff;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Inter', sans-serif; font-size: 14px; background: var(--eq-bg-page); color: var(--eq-text-dark); }
+
+  /* ── TOP NAV ── */
+  .topnav {
+    background: var(--eq-primary);
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 32px; height: 56px;
+  }
+  .topnav .logo { color: var(--eq-text-white); font-weight: 700; font-size: 16px; letter-spacing: 0.5px; }
+  .topnav .logo span { color: #7ecbe8; font-weight: 400; }
+  .topnav .user { color: rgba(255,255,255,0.85); font-size: 13px; display: flex; align-items: center; gap: 10px; }
+  .topnav .user .avatar {
+    width: 28px; height: 28px; border-radius: 50%; background: #4caf7d;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; color: #fff; font-weight: 700;
+  }
+
+  /* ── MENU ── */
+  .menu {
+    background: var(--eq-primary);
+    display: flex; padding: 0 32px;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+  }
+  .menu a {
+    display: flex; align-items: center; gap: 6px;
+    padding: 0 16px; height: 44px; font-size: 13px;
+    color: rgba(255,255,255,0.7); text-decoration: none;
+    border-bottom: 2px solid transparent; cursor: pointer; transition: all 0.15s;
+  }
+  .menu a:hover { color: #fff; }
+  .menu a.active { color: #fff; border-bottom: 2px solid #fff; font-weight: 600; }
+
+  /* ── PAGE HEADER ── */
+  .page-header { padding: 24px 32px 0; }
+  .breadcrumb { font-size: 12px; color: var(--eq-text-light); margin-bottom: 6px; }
+  .breadcrumb a { color: var(--eq-primary); text-decoration: none; font-weight: 500; }
+  .breadcrumb a:hover { text-decoration: underline; }
+  .page-title { font-size: 28px; font-weight: 700; color: var(--eq-text-dark); margin-bottom: 16px; }
+
+  /* ── STEPPER ── */
+  .stepper {
+    display: flex; background: var(--eq-bg-white);
+    border: 1px solid var(--eq-border); margin: 0 32px 20px;
+    border-radius: 8px; overflow: hidden;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+  }
+  .step {
+    flex: 1; padding: 12px 20px; display: flex; align-items: center; gap: 12px;
+    border-right: 1px solid var(--eq-border); background: var(--eq-bg-page); color: var(--eq-text-light);
+  }
+  .step:last-child { border-right: none; }
+  .step.active { background: var(--eq-primary); color: var(--eq-text-white); }
+  .step.done { background: var(--eq-bg-white); color: var(--eq-text-mid); }
+  .step .num {
+    width: 26px; height: 26px; border-radius: 50%;
+    background: var(--eq-border); display: flex; align-items: center;
+    justify-content: center; font-size: 12px; font-weight: 700; flex-shrink: 0;
+    color: var(--eq-text-mid);
+  }
+  .step.active .num { background: rgba(255,255,255,0.25); color: #fff; }
+  .step.done .num { background: var(--eq-primary-light); color: var(--eq-primary); }
+  .step .step-label { font-size: 13px; font-weight: 600; }
+  .step .step-sub { font-size: 11px; opacity: 0.75; margin-top: 1px; }
+
+  /* ── PLANS HEADER ── */
+  .plans-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 4px 32px 14px;
+  }
+  .plans-title { font-size: 16px; font-weight: 600; color: var(--eq-text-dark); }
+  .btn-group { display: flex; gap: 10px; }
+
+  .content { padding: 0 32px 100px; }
+
+  /* ── BUTTONS ── */
+  .btn {
+    padding: 10px 20px; border-radius: 6px; font-size: 14px; font-weight: 600;
+    cursor: pointer; border: none; transition: all 0.15s;
+    display: inline-flex; align-items: center; gap: 6px;
+    font-family: 'Inter', sans-serif;
+  }
+  .btn:hover { opacity: 0.9; }
+  .btn-primary { background: var(--eq-primary); color: var(--eq-text-white); }
+  .btn-primary:hover { background: var(--eq-primary-hover); }
+  .btn-secondary { background: var(--eq-bg-white); color: var(--eq-primary); border: 1.5px solid var(--eq-primary); }
+  .btn-secondary:hover { background: var(--eq-primary-light); }
+  .btn-danger { background: var(--eq-accent-red); color: #fff; }
+  .btn-sm { padding: 8px 16px; font-size: 13px; }
+  .btn-xs { padding: 5px 10px; font-size: 12px; }
+
+  .btn-preview {
+    background: var(--eq-bg-white); color: var(--eq-primary);
+    border: 1.5px solid var(--eq-primary); padding: 7px 14px;
+    font-size: 12px; border-radius: 6px; cursor: pointer; font-weight: 600;
+    font-family: 'Inter', sans-serif;
+    display: inline-flex; align-items: center; gap: 5px; transition: background 0.15s;
+  }
+  .btn-preview:hover { background: var(--eq-primary-light); }
+
+  .btn-preview-tor {
+    background: var(--eq-bg-white); color: #0e7c60;
+    border: 1.5px solid #0e7c60; padding: 7px 14px;
+    font-size: 12px; border-radius: 6px; cursor: pointer; font-weight: 600;
+    font-family: 'Inter', sans-serif;
+    display: inline-flex; align-items: center; gap: 5px; transition: background 0.15s;
+  }
+  .btn-preview-tor:hover { background: #e6f7f1; }
+
+  /* ── YEAR BLOCK ── */
+  .year-block {
+    background: var(--eq-bg-white); border: 1px solid var(--eq-border);
+    border-radius: 8px; margin-bottom: 14px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04); overflow: hidden;
+  }
+  .year-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 13px 20px; border-bottom: 1px solid var(--eq-border);
+    background: var(--eq-primary-light); cursor: pointer; user-select: none;
+    transition: background 0.15s;
+  }
+  .year-header:hover { background: #dce8ef; }
+  .year-left { display: flex; align-items: center; gap: 8px; }
+  .year-badge { color: var(--eq-primary); font-weight: 700; font-size: 14px; }
+  .year-summary { font-size: 12px; color: var(--eq-text-mid); }
+  .year-right { display: flex; align-items: center; gap: 10px; }
+  .chevron { font-size: 11px; color: var(--eq-text-mid); transition: transform 0.2s; display: inline-block; }
+  .chevron.open { transform: rotate(180deg); }
+  .btn-remove-year {
+    background: transparent; border: 1.5px solid #fca5a5; color: var(--eq-accent-red);
+    border-radius: 6px; padding: 4px 10px; font-size: 12px; cursor: pointer;
+    font-weight: 600; font-family: 'Inter', sans-serif;
+  }
+  .btn-remove-year:hover { background: #fef2f2; }
+  .year-body { padding: 24px; }
+
+  /* ── FORM ── */
+  .form-row { display: flex; gap: 24px; margin-bottom: 20px; flex-wrap: wrap; align-items: flex-end; }
+  .form-group { display: flex; flex-direction: column; gap: 6px; }
+  .form-group label {
+    font-size: 13px; color: var(--eq-text-dark); font-weight: 500; white-space: nowrap;
+  }
+  .field {
+    border: 1px solid var(--eq-border); border-radius: 6px; padding: 9px 12px;
+    font-size: 14px; color: var(--eq-text-dark); background: var(--eq-bg-white);
+    display: flex; align-items: center; gap: 6px;
+    transition: border-color 0.15s;
+  }
+  .field:focus-within { border-color: var(--eq-primary); }
+  .field select {
+    border: none; background: transparent; font-size: 14px; outline: none;
+    color: var(--eq-text-dark); font-family: 'Inter', sans-serif;
+  }
+  .field input {
+    border: none; background: transparent; font-size: 14px; outline: none;
+    min-width: 0; color: var(--eq-text-dark); font-family: 'Inter', sans-serif;
+  }
+  .fg-xs { width: 80px; }
+  .fg-sm { width: 100px; }
+  .fg-md { width: 130px; }
+  .fg-lg { width: 170px; }
+
+  hr { border: none; border-top: 1px solid var(--eq-border); margin: 20px 0; }
+
+  /* ── TABLE ── */
+  .table-section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+  .table-section-title { font-size: 14px; font-weight: 600; color: var(--eq-text-dark); }
+  .table-link { font-size: 12px; color: var(--eq-primary); cursor: pointer; font-weight: 500; }
+  .table-link:hover { text-decoration: underline; }
+
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  thead th {
+    padding: 12px 14px; text-align: left; font-weight: 600;
+    color: var(--eq-text-white); background: var(--eq-primary);
+    font-size: 12px; text-transform: uppercase; letter-spacing: 0.04em;
+    border-right: 1px solid rgba(255,255,255,0.1);
+  }
+  thead th:last-child { border-right: none; }
+  tbody td { padding: 11px 14px; border-bottom: 1px solid var(--eq-border); color: var(--eq-text-dark); }
+  tbody tr:nth-child(even) { background: #f7f9fb; }
+  tbody tr:hover { background: var(--eq-primary-light); }
+  .td-right { text-align: right; }
+  .td-center { text-align: center; }
+
+  .total-row td {
+    font-weight: 600; background: var(--eq-primary-light);
+    border-top: 2px solid var(--eq-border); padding: 11px 14px;
+    font-size: 13px; color: var(--eq-text-dark);
+  }
+  .grand-total-row td {
+    font-weight: 700; background: var(--eq-primary); color: var(--eq-text-white);
+    padding: 12px 14px; font-size: 13px;
+  }
+  .inst-ctrl select {
+    font-size: 12px; padding: 3px 5px; border: 1px solid var(--eq-border);
+    border-radius: 4px; background: #fff; font-family: 'Inter', sans-serif;
+    color: var(--eq-text-dark);
+  }
+  .header-icon { font-size: 9px; color: rgba(255,255,255,0.6); }
+
+  /* ── PREVIEW BTN ROW ── */
+  .preview-btns-row {
+    display: flex; gap: 10px; margin-top: 14px; align-items: center;
+    padding: 12px 14px; background: var(--eq-primary-light);
+    border-radius: 6px; border: 1px solid var(--eq-border);
+  }
+  .preview-label { font-size: 12px; color: var(--eq-text-mid); font-weight: 500; }
+
+  /* ── SERVICE CHARGES ── */
+  .sc-wrapper { margin-top: 20px; }
+  .sc-section-label { font-size: 15px; font-weight: 600; color: var(--eq-text-dark); margin-bottom: 12px; }
+  .sc-block {
+    border: 1px solid var(--eq-border); border-radius: 8px;
+    padding: 18px 20px; margin-bottom: 12px; background: #fafcfd;
+  }
+  .sc-block-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+  .sc-block-title { font-size: 13px; font-weight: 600; color: var(--eq-text-dark); }
+  .btn-remove-sc {
+    background: transparent; border: 1.5px solid #fca5a5; color: var(--eq-accent-red);
+    border-radius: 6px; padding: 3px 10px; font-size: 12px; cursor: pointer;
+    font-weight: 600; font-family: 'Inter', sans-serif;
+  }
+  .btn-remove-sc:hover { background: #fef2f2; }
+
+  .sc-add-btn {
+    display: flex; align-items: center; gap: 8px;
+    border: 1.5px dashed var(--eq-primary); border-radius: 8px;
+    padding: 12px 16px; color: var(--eq-primary); font-size: 13px;
+    cursor: pointer; font-weight: 600; transition: background 0.15s;
+    font-family: 'Inter', sans-serif;
+  }
+  .sc-add-btn:hover { background: var(--eq-primary-light); }
+
+  .inline-input {
+    border: 1px solid var(--eq-border); border-radius: 6px;
+    padding: 5px 8px; font-size: 13px; font-family: 'Inter', sans-serif;
+    color: var(--eq-text-dark); background: #fff;
+  }
+  .inline-input:focus { outline: none; border-color: var(--eq-primary); }
+  .aed-tag { font-size: 12px; color: var(--eq-text-light); font-weight: 500; }
+
+  /* ── ADDITIONAL PAYMENTS ── */
+  .addpay-card {
+    background: var(--eq-bg-white); border: 1px solid var(--eq-border);
+    border-radius: 8px; padding: 24px; margin-bottom: 14px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  }
+  .addpay-title { font-size: 15px; font-weight: 600; color: var(--eq-text-dark); margin-bottom: 16px; }
+  .add-another-btn {
+    display: flex; align-items: center; justify-content: center; gap: 6px;
+    border: 1.5px dashed var(--eq-primary); border-radius: 6px; padding: 10px;
+    color: var(--eq-primary); font-size: 13px; cursor: pointer; margin-top: 10px;
+    font-weight: 600; transition: background 0.15s; font-family: 'Inter', sans-serif;
+  }
+  .add-another-btn:hover { background: var(--eq-primary-light); }
+
+  /* ── ADD YEAR ── */
+  .add-year-btn {
+    display: flex; align-items: center; justify-content: center; gap: 10px;
+    border: 2px dashed var(--eq-primary); border-radius: 8px; padding: 14px;
+    color: var(--eq-primary); font-size: 14px; cursor: pointer; font-weight: 700;
+    margin-bottom: 16px; transition: all 0.15s; background: var(--eq-bg-white);
+    font-family: 'Inter', sans-serif;
+  }
+  .add-year-btn:hover { background: var(--eq-primary-light); }
+
+  /* ── BOTTOM BAR ── */
+  .bottom-bar {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 14px 32px; background: var(--eq-bg-white);
+    border-top: 1px solid var(--eq-border);
+    position: fixed; bottom: 0; left: 0; right: 0; z-index: 100;
+    box-shadow: 0 -2px 8px rgba(0,0,0,0.06);
+  }
+
+  .varies-text { color: var(--eq-text-light); font-style: italic; font-size: 13px; }
+  .info-icon { color: var(--eq-accent-blue); cursor: pointer; }
+
+  /* ── MODAL ── */
+  .modal-overlay {
+    display: none; position: fixed; inset: 0;
+    background: rgba(0,0,0,0.5); z-index: 1000;
+    align-items: center; justify-content: center; backdrop-filter: blur(2px);
+  }
+  .modal-overlay.open { display: flex; }
+  .modal-box {
+    background: var(--eq-bg-white); border-radius: 8px;
+    box-shadow: 0 8px 40px rgba(0,0,0,0.2);
+    max-width: 700px; width: 94%; max-height: 85vh;
+    display: flex; flex-direction: column;
+    animation: modalIn 0.2s ease;
+  }
+  @keyframes modalIn { from { opacity:0; transform:translateY(-12px) scale(0.98); } to { opacity:1; transform:none; } }
+
+  .modal-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 16px 24px;
+    background: var(--eq-primary);
+    border-radius: 8px 8px 0 0;
+  }
+  .modal-title {
+    font-size: 15px; font-weight: 600; color: var(--eq-text-white);
+    display: flex; align-items: center; gap: 10px;
+  }
+  .modal-title .badge {
+    font-size: 11px; background: rgba(255,255,255,0.2); color: #fff;
+    border-radius: 20px; padding: 3px 10px; font-weight: 600;
+  }
+  .modal-title .badge-tor { background: rgba(78,205,156,0.3); }
+  .modal-close {
+    background: rgba(255,255,255,0.15); border: none; font-size: 16px;
+    color: #fff; cursor: pointer; line-height: 1; padding: 4px 8px;
+    border-radius: 4px; transition: background 0.15s;
+  }
+  .modal-close:hover { background: rgba(255,255,255,0.3); }
+  .modal-body { overflow-y: auto; padding: 20px 24px; }
+  .modal-footer {
+    padding: 14px 24px; border-top: 1px solid var(--eq-border);
+    display: flex; justify-content: flex-end; gap: 10px;
+  }
+
+  .modal-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .modal-table thead th {
+    background: var(--eq-primary); padding: 11px 14px; text-align: left;
+    font-weight: 600; color: var(--eq-text-white); font-size: 12px;
+    text-transform: uppercase; letter-spacing: 0.04em;
+    border-right: 1px solid rgba(255,255,255,0.1);
+  }
+  .modal-table thead th:last-child { border-right: none; }
+  .modal-table tbody td { padding: 10px 14px; border-bottom: 1px solid var(--eq-border); }
+  .modal-table tbody tr:nth-child(even) { background: #f7f9fb; }
+  .modal-table tbody tr:hover { background: var(--eq-primary-light); }
+  .modal-table tfoot td {
+    padding: 11px 14px; font-weight: 700;
+    background: var(--eq-primary); color: var(--eq-text-white);
+  }
+  .modal-table tfoot td.tor-footer { background: #0e7c60; }
+</style>
+</head>
+<body>
+
+<!-- TOP NAV -->
+<div class="topnav">
+  <div class="logo">EQARCOM<span>+</span></div>
+  <div class="user">
+    <span>&#128276;</span>
+    <div class="avatar">A</div>
+    <span>adam.smith@yopmail.com</span>
+  </div>
+</div>
+
+<!-- MENU -->
+<div class="menu">
+  <a href="#">&#8862; Dashboard</a>
+  <a href="#">&#127970; Properties</a>
+  <a href="#">&#127968; Units</a>
+  <a href="#">&#128100; Contacts</a>
+  <a href="#" class="active">&#128196; Contracts</a>
+  <a href="#">&#9993; Requests</a>
+  <a href="#">&#128276; Notices</a>
+  <a href="#">&#128101; Users</a>
+</div>
+
+<!-- PAGE HEADER -->
+<div class="page-header">
+  <div class="breadcrumb"><a href="#">Pages</a> / <a href="#">Contracts</a> / New</div>
+  <div class="page-title">01 Ocean Business Tower</div>
+</div>
+
+<!-- STEPPER -->
+<div class="stepper">
+  <div class="step done">
+    <div class="num">1</div>
+    <div><div class="step-label">Tenant</div><div class="step-sub">Personal information</div></div>
+  </div>
+  <div class="step done">
+    <div class="num">2</div>
+    <div><div class="step-label">Lease Terms</div><div class="step-sub">Rental agreement details</div></div>
+  </div>
+  <div class="step active">
+    <div class="num">3</div>
+    <div><div class="step-label">Payment Plans</div><div class="step-sub">Options for rent payment</div></div>
+  </div>
+  <div class="step">
+    <div class="num">4</div>
+    <div><div class="step-label">Documents</div><div class="step-sub">Required paperwork</div></div>
+  </div>
+</div>
+
+<!-- PLANS HEADER -->
+<div class="plans-header">
+  <div class="plans-title">Payment Plans</div>
+  <div class="btn-group">
+    <button class="btn btn-primary btn-sm">Send for Approval</button>
+    <button class="btn btn-secondary btn-sm">Preview Schedule</button>
+    <button class="btn btn-secondary btn-sm">Edit TOR Rules</button>
+  </div>
+</div>
+
+<!-- CONTENT -->
+<div class="content">
+  <div id="years-container"></div>
+
+  <div class="add-year-btn" onclick="addYear()">
+    <span style="font-size:22px;font-weight:300;line-height:1;">+</span> Add Year
+  </div>
+
+  <!-- ADDITIONAL PAYMENTS -->
+  <div class="addpay-card">
+    <div class="addpay-title">Additional Payments</div>
+    <table id="addpay-table">
+      <thead>
+        <tr>
+          <th>TYPE</th><th>MODE</th><th>DUE DATE</th><th>AMOUNT TYPE</th>
+          <th>AMOUNT/%</th><th>TAX %</th><th>TOTAL AMOUNT</th><th style="width:32px;"></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Security Deposit</td>
+          <td><div class="field" style="width:118px;"><select><option>Credit Card</option><option>Bank Transfer</option><option>Cheque</option></select></div></td>
+          <td><div class="field" style="width:112px;"><input type="text" value="01/17/2026" style="width:74px;"> &#128197;</div></td>
+          <td><div class="field" style="width:158px;"><select><option>Percentage Of Rent</option><option>Fixed Amount</option></select></div></td>
+          <td><input class="inline-input" style="width:46px;" type="text" value="5"></td>
+          <td><input class="inline-input" style="width:46px;" type="text" value="5"></td>
+          <td><span class="varies-text">Varies by plan</span> <span class="info-icon">&#8505;</span></td>
+          <td><button onclick="removeRow(this)" style="background:none;border:none;color:var(--eq-accent-red);cursor:pointer;font-size:15px;padding:0 4px;">&times;</button></td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="add-another-btn" onclick="addPaymentRow()">
+      <span style="font-size:18px;font-weight:300;">+</span> Add Another Payment
+    </div>
+  </div>
+</div>
+
+<!-- BOTTOM BAR -->
+<div class="bottom-bar">
+  <button class="btn btn-secondary btn-sm">&larr; Back</button>
+  <div style="display:flex;gap:10px;">
+    <button class="btn btn-danger btn-sm">Discard</button>
+    <button class="btn btn-primary btn-sm">Save Draft</button>
+  </div>
+</div>
+
+<!-- BASE RENT MODAL -->
+<div class="modal-overlay" id="modal-base-rent">
+  <div class="modal-box">
+    <div class="modal-header">
+      <div class="modal-title">
+        &#128203; Base Rent Payment Schedule
+        <span class="badge" id="modal-br-year-badge">YEAR 1</span>
+      </div>
+      <button class="modal-close" onclick="closeModal('modal-base-rent')">&times;</button>
+    </div>
+    <div class="modal-body">
+      <table class="modal-table">
+        <thead>
+          <tr>
+            <th>INST #</th><th>FROM</th><th>TO</th><th>DUE DATE</th>
+            <th style="text-align:right;">BASE RENT</th>
+            <th style="text-align:right;">VAT</th>
+            <th style="text-align:right;">TOTAL</th>
+          </tr>
+        </thead>
+        <tbody id="modal-br-body"></tbody>
+        <tfoot id="modal-br-foot"></tfoot>
+      </table>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary btn-sm">&#128424; Print</button>
+      <button class="btn btn-primary btn-sm" onclick="closeModal('modal-base-rent')">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOR MODAL -->
+<div class="modal-overlay" id="modal-tor">
+  <div class="modal-box">
+    <div class="modal-header" style="background:#0e7c60;">
+      <div class="modal-title">
+        &#128197; TOR Schedule
+        <span class="badge badge-tor" id="modal-tor-year-badge">YEAR 1</span>
+      </div>
+      <button class="modal-close" onclick="closeModal('modal-tor')">&times;</button>
+    </div>
+    <div class="modal-body">
+      <table class="modal-table">
+        <thead>
+          <tr style="background:#0e7c60;">
+            <th style="width:44px;">#</th>
+            <th>FROM</th><th>TO</th><th>DUE DATE</th>
+          </tr>
+        </thead>
+        <tbody id="modal-tor-body"></tbody>
+        <tfoot id="modal-tor-foot"></tfoot>
+      </table>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-sm" style="background:#fff;color:#0e7c60;border:1.5px solid #0e7c60;font-family:'Inter',sans-serif;font-weight:600;border-radius:6px;">&#128424; Print</button>
+      <button class="btn btn-sm" style="background:#0e7c60;color:#fff;border:none;font-family:'Inter',sans-serif;font-weight:600;border-radius:6px;" onclick="closeModal('modal-tor')">Close</button>
+    </div>
+  </div>
+</div>
+
+<script>
+let yearCount = 0;
+const scCounters = {};
+const yearDataStore = {};
+
+const year1 = {
+  rentType:'Per Sq Ft', unitArea:'1134', rentValue:'343', rent:'388,962',
+  secDeposit:'0', commencement:'16 / 08 / 2025', installments:'6', torPeriods:'13',
+  billing:[
+    ['16/08/2025','31/08/2025','7,361.00','368.05','7,729.05','1','1'],
+    ['01/09/2025','30/09/2025','14,261.94','713.10','14,975.04','1','2'],
+    ['01/10/2025','31/10/2025','36,886.56','1,844.33','38,730.89','1','3'],
+    ['01/11/2025','30/11/2025','36,886.56','1,844.33','38,730.89','2','4'],
+    ['01/12/2025','31/12/2025','36,886.56','1,844.33','38,730.89','2','5'],
+    ['01/01/2026','31/01/2026','36,886.56','1,844.33','38,730.89','3','6'],
+    ['01/02/2026','28/02/2026','46,092.00','2,304.60','48,396.60','3','7'],
+    ['01/03/2026','31/03/2026','46,092.00','2,304.60','48,396.60','4','8'],
+    ['01/04/2026','30/04/2026','46,092.00','2,304.60','48,396.60','4','9'],
+    ['01/05/2026','31/05/2026','46,092.00','2,304.60','48,396.60','5','10'],
+    ['01/06/2026','30/06/2026','14,261.94','713.10','14,975.04','5','11'],
+    ['01/07/2026','31/07/2026','14,261.94','713.10','14,975.04','6','12'],
+    ['01/08/2026','15/08/2026','6,900.94','345.05','7,245.99','6','13']
+  ],
+  billingTotal:['388,962.00','19,448.10','408,410.10'],
+  baseRent:[
+    ['1','16/08/2025','31/10/2025','16/08/2025','58,509.50','2,925.48','61,434.98'],
+    ['2','01/11/2025','31/12/2025','01/11/2025','73,773.13','3,688.66','77,461.78'],
+    ['3','01/01/2026','28/02/2026','01/01/2026','82,978.56','4,148.93','87,127.49'],
+    ['4','01/03/2026','30/04/2026','01/03/2026','92,183.99','4,609.20','96,793.19'],
+    ['5','01/05/2026','30/06/2026','01/05/2026','60,353.94','3,017.70','63,371.63'],
+    ['6','01/07/2026','15/08/2026','01/07/2026','21,162.88','1,058.14','22,221.02']
+  ],
+  grandTotal:['388,962.00','19,448.10','408,410.10'],
+  torSchedule:[
+    ['1','16-08-2025','31-08-2025','16-08-2025'],
+    ['2','01-09-2025','30-09-2025','01-09-2025'],
+    ['3','01-10-2025','31-10-2025','01-10-2025'],
+    ['4','01-11-2025','30-11-2025','01-11-2025'],
+    ['5','01-12-2025','31-12-2025','01-12-2025'],
+    ['6','01-01-2026','31-01-2026','01-01-2026'],
+    ['7','01-02-2026','28-02-2026','01-02-2026'],
+    ['8','01-03-2026','31-03-2026','01-03-2026'],
+    ['9','01-04-2026','30-04-2026','01-04-2026'],
+    ['10','01-05-2026','31-05-2026','01-05-2026'],
+    ['11','01-06-2026','30-06-2026','01-06-2026'],
+    ['12','01-07-2026','31-07-2026','01-07-2026'],
+    ['13','01-08-2026','15-08-2026','01-08-2026']
+  ],
+  serviceCharges:[{
+    type:'Fixed', amount:'30,000.00', installments:'4', commencement:'16 / 08 / 2025',
+    rows:[
+      ['1','16 /08 /2025','15 /11 /2025','16/08/2025','7,500.00','0','7,500.00'],
+      ['2','16 /11 /2025','15 /02 /2026','16/11/2025','7,500.00','0','7,500.00'],
+      ['3','16 /02 /2026','15 /05 /2026','16/02/2026','7,500.00','0','7,500.00'],
+      ['4','16 /05 /2025','15 /08 /2026','16/05/2025','7,500.00','0','7,500.00']
+    ],
+    total:['30,000.00','0.00','30,000.00']
+  }]
+};
+
+/* MODALS */
+function openBaseRentModal(yid, yearNum) {
+  var d = yearDataStore[yid];
+  document.getElementById('modal-br-year-badge').textContent = 'YEAR ' + yearNum;
+  var tbody = document.getElementById('modal-br-body');
+  var tfoot = document.getElementById('modal-br-foot');
+  tbody.innerHTML = ''; tfoot.innerHTML = '';
+  if (d && d.baseRent && d.baseRent.length) {
+    d.baseRent.forEach(function(r) {
+      tbody.innerHTML += '<tr><td style="text-align:center;">'+r[0]+'</td><td>'+r[1]+'</td><td>'+r[2]+'</td><td>'+r[3]+'</td><td style="text-align:right;">'+r[4]+'</td><td style="text-align:right;">'+r[5]+'</td><td style="text-align:right;">'+r[6]+'</td></tr>';
+    });
+    var gt = d.grandTotal || ['—','—','—'];
+    tfoot.innerHTML = '<tr><td colspan="4">Grand Total</td><td style="text-align:right;">'+gt[0]+'</td><td style="text-align:right;">'+gt[1]+'</td><td style="text-align:right;">'+gt[2]+'</td></tr>';
+  } else {
+    tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:#8fa5b3;padding:24px;">No data available</td></tr>';
+  }
+  document.getElementById('modal-base-rent').classList.add('open');
+}
+
+function openTORModal(yid, yearNum) {
+  var d = yearDataStore[yid];
+  document.getElementById('modal-tor-year-badge').textContent = 'YEAR ' + yearNum;
+  var tbody = document.getElementById('modal-tor-body');
+  var tfoot = document.getElementById('modal-tor-foot');
+  tbody.innerHTML = ''; tfoot.innerHTML = '';
+  if (d && d.torSchedule && d.torSchedule.length) {
+    d.torSchedule.forEach(function(r) {
+      tbody.innerHTML += '<tr><td style="text-align:center;color:#4b5e6d;">'+r[0]+'</td><td>'+r[1]+'</td><td>'+r[2]+'</td><td>'+r[3]+'</td></tr>';
+    });
+    tfoot.innerHTML = '<tr><td class="tor-footer" style="text-align:center;">'+d.torSchedule.length+'</td><td class="tor-footer" colspan="3">Total TOR Periods</td></tr>';
+  } else {
+    tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;color:#8fa5b3;padding:24px;">No data available</td></tr>';
+  }
+  document.getElementById('modal-tor').classList.add('open');
+}
+
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+
+document.querySelectorAll('.modal-overlay').forEach(function(el) {
+  el.addEventListener('click', function(e) { if (e.target === el) el.classList.remove('open'); });
+});
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') document.querySelectorAll('.modal-overlay.open').forEach(function(m){ m.classList.remove('open'); });
+});
+
+/* SERVICE CHARGE BLOCK */
+function buildSCBlock(yid, idx, sc) {
+  var scId = 'sc-'+yid+'-'+idx;
+  var rows = '';
+  (sc.rows||[]).forEach(function(r) {
+    rows += '<tr>'
+      +'<td class="td-center">'+r[0]+'</td>'
+      +'<td><input class="inline-input" type="text" value="'+r[1]+'" style="width:88px;"></td>'
+      +'<td><input class="inline-input" type="text" value="'+r[2]+'" style="width:88px;"></td>'
+      +'<td>'+r[3]+'</td>'
+      +'<td class="td-right"><input class="inline-input" type="text" value="'+r[4]+'" style="width:80px;text-align:right;"></td>'
+      +'<td class="td-center">'+r[5]+'</td>'
+      +'<td class="td-right">'+r[6]+'</td>'
+      +'</tr>';
+  });
+  var t = sc.total || ['0.00','0.00','0.00'];
+  return '<div class="sc-block" id="'+scId+'">'
+    +'<div class="sc-block-header">'
+    +'<div class="sc-block-title">Service Charge</div>'
+    +'<button class="btn-remove-sc" onclick="removeSC(\''+scId+'\')">&#10005; Remove</button>'
+    +'</div>'
+    +'<div class="form-row" style="margin-bottom:14px;">'
+    +'<div class="form-group"><label>Service Charge Type</label><div class="field fg-md"><select><option'+(sc.type==='Fixed'?' selected':'')+'>Fixed</option><option'+(sc.type==='Per Sq Ft'?' selected':'')+'>Per Sq Ft</option><option>Percentage</option></select></div></div>'
+    +'<div class="form-group"><label>Service Charge</label><div class="field fg-lg"><input type="text" value="'+(sc.amount||'')+'"> <span class="aed-tag">AED</span></div></div>'
+    +'<div class="form-group"><label>No. of Installments</label><div class="field fg-sm"><input type="text" value="'+(sc.installments||'')+'"></div></div>'
+    +'<div class="form-group"><label>Rent Commencement</label><div class="field fg-lg"><input type="text" value="'+(sc.commencement||'')+'"></div></div>'
+    +'</div>'
+    +'<div class="table-section-title" style="margin-bottom:8px;font-size:13px;font-weight:600;color:var(--eq-text-dark);">Payment Schedule Breakdown</div>'
+    +'<table><thead><tr><th>INST #</th><th>FROM</th><th>TO</th><th>DUE DATE</th><th>SERVICE CHARGES</th><th>VAT</th><th>TOTAL</th></tr></thead>'
+    +'<tbody>'+(rows||'<tr><td colspan="7" style="text-align:center;color:#8fa5b3;padding:14px;">No rows</td></tr>')+'</tbody>'
+    +'<tfoot><tr class="total-row"><td colspan="4"><strong>Total</strong></td><td class="td-right">'+t[0]+'</td><td class="td-right">'+t[1]+'</td><td class="td-right">'+t[2]+'</td></tr></tfoot>'
+    +'</table></div>';
+}
+
+/* YEAR BLOCK */
+function buildYearBlock(yid, num, d) {
+  var isFirst = (num === 1);
+  var billingRows = '';
+  (d && d.billing || []).forEach(function(r) {
+    billingRows += '<tr>'
+      +'<td>'+r[0]+'</td><td>'+r[1]+'</td>'
+      +'<td class="td-right"><input class="inline-input" type="text" value="'+r[2]+'" style="width:80px;text-align:right;"></td>'
+      +'<td class="td-right">'+r[3]+'</td><td class="td-right">'+r[4]+'</td>'
+      +'<td class="td-center"><select class="inst-ctrl">'+makeOpts(r[5],6)+'</select></td>'
+      +'<td class="td-center"><select class="inst-ctrl">'+makeOpts(r[6],13)+'</select></td>'
+      +'</tr>';
+  });
+  var bt = (d && d.billingTotal) || ['—','—','—'];
+
+  var scBlocks = '';
+  (d && d.serviceCharges || []).forEach(function(sc, i) {
+    scBlocks += buildSCBlock(yid, i, sc);
+    if (!scCounters[yid]) scCounters[yid] = 0;
+    scCounters[yid] = Math.max(scCounters[yid], i+1);
+  });
+
+  var instOptions = [1,2,3,4,6,12].map(function(n){ return '<option'+(d&&d.installments==n?' selected':'')+'>'+n+'</option>'; }).join('');
+  var torOptions = '';
+  for (var i=1;i<=24;i++) { torOptions += '<option'+(d&&d.torPeriods==i?' selected':'')+'>'+i+'</option>'; }
+
+  var summaryText = d ? '&nbsp;&nbsp;<span class="year-summary">Rent: '+d.rent+' AED &nbsp;&middot;&nbsp; From: '+d.commencement+'</span>' : '';
+  var removeBtn = !isFirst ? '<button class="btn-remove-year" onclick="removeYear(event,\''+yid+'\')">&#10005; Remove Year</button>' : '';
+
+  return '<div class="year-block" id="year-'+yid+'">'
+    +'<div class="year-header" onclick="toggleYear(\''+yid+'\')">'
+    +'<div class="year-left"><span class="year-badge">YEAR '+num+'</span>'+summaryText+'</div>'
+    +'<div class="year-right">'+removeBtn+'<span class="chevron open" id="chevron-'+yid+'">&#9660;</span></div>'
+    +'</div>'
+    +'<div class="year-body" id="body-'+yid+'">'
+    +'<div class="form-row">'
+    +'<div class="form-group"><label>Rent Type</label><div class="field fg-md"><select><option>Per Sq Ft</option><option>Fixed</option></select></div></div>'
+    +'<div class="form-group"><label>Unit Area (Sq Ft)</label><div class="field fg-md"><input type="text" value="'+(d?d.unitArea:'')+'"></div></div>'
+    +'<div class="form-group"><label>Rent Value</label><div class="field fg-xs"><input type="text" value="'+(d?d.rentValue:'')+'"></div></div>'
+    +'<div class="form-group"><label>Rent</label><div class="field fg-md"><input type="text" value="'+(d?d.rent:'')+'"></div></div>'
+    +'<div class="form-group"><label>Security Deposit</label><div class="field fg-md"><input type="text" value="'+(d?d.secDeposit:'0')+'"></div></div>'
+    +'<div class="form-group"><label>Rent Commencement</label><div class="field fg-lg"><input type="text" value="'+(d?d.commencement:'')+'"></div></div>'
+    +'</div>'
+    +'<div class="form-row">'
+    +'<div class="form-group"><label>No. of Rent Installments</label><div class="field fg-md"><select style="width:100%">'+instOptions+'</select></div></div>'
+    +'<div class="form-group"><label>No. of TOR Periods</label><div class="field fg-md"><select style="width:100%">'+torOptions+'</select></div></div>'
+    +'</div>'
+    +'<hr>'
+    +'<div class="table-section-header">'
+    +'<div class="table-section-title">Billing Schedule Breakdown</div>'
+    +'<span class="table-link">Edit base rent values and assign installments</span>'
+    +'</div>'
+    +'<table>'
+    +'<thead><tr>'
+    +'<th>FROM</th><th>TO</th>'
+    +'<th>BASE RENT <span class="header-icon">&#8635;</span></th>'
+    +'<th>VAT</th><th>TOTAL</th>'
+    +'<th>INST # <span class="header-icon">&#8635;</span></th>'
+    +'<th>TOR PERIOD # <span class="header-icon">&#8635;</span></th>'
+    +'</tr></thead>'
+    +'<tbody>'+(billingRows||'<tr><td colspan="7" style="text-align:center;color:#8fa5b3;padding:20px;">No billing rows</td></tr>')+'</tbody>'
+    +'<tfoot><tr class="total-row">'
+    +'<td colspan="2"><strong>Total</strong></td>'
+    +'<td class="td-right">'+bt[0]+'</td><td class="td-right">'+bt[1]+'</td><td class="td-right">'+bt[2]+'</td>'
+    +'<td colspan="2"></td>'
+    +'</tr></tfoot>'
+    +'</table>'
+    +'<div class="preview-btns-row">'
+    +'<span class="preview-label">Generate / Preview:</span>'
+    +'<button class="btn-preview" onclick="openBaseRentModal(\''+yid+'\', '+num+')">&#128203; Base Rent Payment Schedule</button>'
+    +'<button class="btn-preview-tor" onclick="openTORModal(\''+yid+'\', '+num+')">&#128197; TOR Schedule</button>'
+    +'</div>'
+    +'<div class="sc-wrapper">'
+    +'<div class="sc-section-label">Service Charges</div>'
+    +'<div id="sc-list-'+yid+'">'+scBlocks+'</div>'
+    +'<div class="sc-add-btn" onclick="addSC(\''+yid+'\')"><span style="font-size:18px;font-weight:300;line-height:1;">+</span> Add Service Charge</div>'
+    +'</div>'
+    +'</div></div>';
+}
+
+function makeOpts(selected, max) {
+  var s = '';
+  for (var i=1;i<=max;i++) { s += '<option'+(i==selected?' selected':'')+'>'+i+'</option>'; }
+  return s;
+}
+
+/* YEAR MANAGEMENT */
+function addYear(data) {
+  yearCount++;
+  var yid = 'y'+yearCount;
+  if (!scCounters[yid]) scCounters[yid] = 0;
+  yearDataStore[yid] = data || null;
+  var container = document.getElementById('years-container');
+  var wrap = document.createElement('div');
+  wrap.innerHTML = buildYearBlock(yid, yearCount, data||null);
+  var el = wrap.firstElementChild;
+  el.style.opacity='0'; el.style.transform='translateY(10px)';
+  el.style.transition='opacity 0.25s, transform 0.25s';
+  container.appendChild(el);
+  requestAnimationFrame(function(){ el.style.opacity='1'; el.style.transform='translateY(0)'; });
+}
+
+function removeYear(e, yid) {
+  e.stopPropagation();
+  var el = document.getElementById('year-'+yid);
+  if (!el) return;
+  el.style.transition='opacity 0.2s, transform 0.2s';
+  el.style.opacity='0'; el.style.transform='translateY(-8px)';
+  setTimeout(function(){ el.remove(); renumberYears(); }, 220);
+}
+
+function renumberYears() {
+  var n=1;
+  document.querySelectorAll('.year-block').forEach(function(b){
+    b.querySelector('.year-badge').textContent='YEAR '+n;
+    var rb=b.querySelector('.btn-remove-year');
+    if(rb) rb.style.display=n===1?'none':'';
+    var yidMatch=b.id.replace('year-','');
+    var brBtn=b.querySelector('.btn-preview');
+    var torBtn=b.querySelector('.btn-preview-tor');
+    if(brBtn) brBtn.setAttribute('onclick',"openBaseRentModal('"+yidMatch+"', "+n+")");
+    if(torBtn) torBtn.setAttribute('onclick',"openTORModal('"+yidMatch+"', "+n+")");
+    n++;
+  });
+}
+
+function toggleYear(yid) {
+  var body=document.getElementById('body-'+yid);
+  var ch=document.getElementById('chevron-'+yid);
+  if(body.style.display==='none'){ body.style.display='block'; ch.classList.add('open'); }
+  else { body.style.display='none'; ch.classList.remove('open'); }
+}
+
+function addSC(yid) {
+  if(!scCounters[yid]) scCounters[yid]=0;
+  var idx=scCounters[yid]++;
+  var empty={type:'Fixed',amount:'',installments:'',commencement:'',
+    rows:[['1','','','','','0',''],['2','','','','','0','']],total:['0.00','0.00','0.00']};
+  var list=document.getElementById('sc-list-'+yid);
+  var wrap=document.createElement('div');
+  wrap.innerHTML=buildSCBlock(yid,idx,empty);
+  var el=wrap.firstElementChild;
+  el.style.opacity='0'; el.style.transform='translateY(6px)';
+  el.style.transition='opacity 0.2s, transform 0.2s';
+  list.appendChild(el);
+  requestAnimationFrame(function(){ el.style.opacity='1'; el.style.transform='translateY(0)'; });
+}
+
+function removeSC(scId) {
+  var el=document.getElementById(scId);
+  if(!el) return;
+  el.style.transition='opacity 0.2s'; el.style.opacity='0';
+  setTimeout(function(){ el.remove(); },200);
+}
+
+function addPaymentRow() {
+  var tbody=document.querySelector('#addpay-table tbody');
+  var tr=document.createElement('tr');
+  tr.innerHTML='<td><div class="field" style="width:130px;"><select><option>Security Deposit</option><option>Registration Fee</option><option>Municipality Fee</option><option>Commission</option></select></div></td>'
+    +'<td><div class="field" style="width:118px;"><select><option>Credit Card</option><option>Bank Transfer</option><option>Cheque</option></select></div></td>'
+    +'<td><div class="field" style="width:112px;"><input type="text" placeholder="DD/MM/YYYY" style="width:74px;"> &#128197;</div></td>'
+    +'<td><div class="field" style="width:158px;"><select><option>Percentage Of Rent</option><option>Fixed Amount</option></select></div></td>'
+    +'<td><input class="inline-input" style="width:46px;" type="text" placeholder="0"></td>'
+    +'<td><input class="inline-input" style="width:46px;" type="text" placeholder="0"></td>'
+    +'<td><span class="varies-text">Varies by plan</span></td>'
+    +'<td><button onclick="removeRow(this)" style="background:none;border:none;color:var(--eq-accent-red);cursor:pointer;font-size:15px;padding:0 4px;">&times;</button></td>';
+  tr.style.opacity='0';
+  tbody.appendChild(tr);
+  requestAnimationFrame(function(){ tr.style.transition='opacity 0.2s'; tr.style.opacity='1'; });
+}
+
+function removeRow(btn) {
+  var tr=btn.closest('tr');
+  tr.style.transition='opacity 0.2s'; tr.style.opacity='0';
+  setTimeout(function(){ tr.remove(); },200);
+}
+
+// Boot
+addYear(year1);
+</script>
+</body>
+</html>
